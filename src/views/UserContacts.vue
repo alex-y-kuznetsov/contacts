@@ -3,11 +3,10 @@
     <div class="contacts-controls">
         <button 
             class="contacts-all"
-            @click="showAllContacts"
-        >show all</button>
-        <div>or</div>
+            @click="toggleAllContacts"
+        >{{ isAllShown ? 'hide' : 'show' }} all</button>
+        <div>or find one</div>
         <div class="search-block">
-            <span>find one</span>
             <input 
                 type="text" 
                 class="search-input" 
@@ -36,6 +35,7 @@ export default {
     data() {
         return {
             isInit: false,
+            isAllShown: false,
             contactsServer: [],
             contactsShown: [],
             textFilter: ''
@@ -48,12 +48,19 @@ export default {
             .then((json) => this.contactsServer = json)
             .finally(this.isInit = true);
         },
-        showAllContacts() {
-            this.contactsShown = this.contactsServer;
+        toggleAllContacts() {
+            if (!this.isAllShown) {
+                this.contactsShown = this.contactsServer;
+                this.isAllShown = true;
+            } else {
+                this.contactsShown = [];
+                this.isAllShown = false;
+            }
+            
         },
         findContact() {
             if (!this.textFilter) {
-                this.contactsShown = [];
+                this.contactsShown = this.isAllShown ? this.contactsServer : [];
                 return;
             }
 
@@ -75,5 +82,47 @@ export default {
 <styles scoped lang="less">
     .contacts-controls {
         display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 30px;
+        margin-top: 40px;
     }
+
+    .contacts-all {
+        min-width: 74px;
+        border: none;
+        background-color: var(--color-green);
+        border-radius: 5px;
+        color: var(--color-white);
+        padding: 8px 12px;
+        cursor: pointer;
+        transition: box-shadow var(--main-transition);
+
+        &:hover {
+            box-shadow: 0px 5px 6px 2px var(--color-grey);
+            transition: box-shadow var(--main-transition);
+        }
+
+        &:active {
+            box-shadow: none;
+            transition: box-shadow var(--main-transition);
+        }
+    }
+
+    .contacts-name {
+        margin: 0;
+        font-size: 16px;
+    }
+
+    .search-input {
+        padding: 8px 12px;
+        border-radius: 5px;
+        border: none;
+        min-width: 264px;
+    }
+
+    .contacts-cover {
+        margin-top: 40px;
+    }
+
 </styles>

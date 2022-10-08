@@ -1,7 +1,9 @@
 <template>
-    <h1>Welcome!</h1>
+    <main class="page-main">
+        <h1>Welcome!</h1>
 
-    <UserContacts />
+            <UserContacts />
+    </main>
 </template>
 
 <script>
@@ -16,5 +18,7 @@ export default {
 </script>
 
 <style scoped>
-
+    .page-main {
+        padding: 40px 0;
+    }
 </style>
