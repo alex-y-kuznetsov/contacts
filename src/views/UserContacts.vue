@@ -5,7 +5,7 @@
             class="contacts-all"
             @click="toggleAllContacts"
         >{{ isAllShown ? 'hide' : 'show' }} all</button>
-        <div>or find one</div>
+        <div>or find some</div>
         <div class="search-block">
             <input 
                 type="text" 
@@ -40,6 +40,7 @@
                 <div class="contacts-misc-item">{{ item.address.zipcode }}</div>
             </div>
         </article>
+        <div v-if="textFilter && !contactsShown.length">No contacts matching search query</div>
     </div>
 </template>
 
@@ -140,10 +141,12 @@ export default {
 
     .contacts-item {
         border: 1px solid var(--color-yellow);
+        background-color: var(--color-dark-green);
         border-radius: 5px;
         text-align: left;
         padding: 12px 8px;
         display: grid;
+        gap: 8px;
         grid-template-columns: 1fr 1fr 1fr;
 
         & + & {
@@ -191,6 +194,20 @@ export default {
 
         .contacts-all {
             min-width: 290px;
+        }
+
+        .contacts-item {
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+        }
+
+        .contacts-secondary {
+            justify-content: start;
+            gap: 4px;
+        }
+
+        .contacts-reach {
+            font-size: 14px;
         }
     }
 </styles>

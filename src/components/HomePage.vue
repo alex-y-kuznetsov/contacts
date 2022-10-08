@@ -1,8 +1,8 @@
 <template>
     <main class="page-main">
-        <h1>Welcome!</h1>
+        <h1>Your Contacts</h1>
 
-            <UserContacts />
+        <UserContacts />
     </main>
 </template>
 
