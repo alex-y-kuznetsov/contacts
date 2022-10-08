@@ -19,10 +19,26 @@
     <div class="contacts-cover">
         <article 
             class="contacts-item"
-            v-for="item in contactsShown"
-            :key="item.id"
+            v-for="item, itemKey in contactsShown"
+            :key="itemKey"
         >
-            <h1 class="contacts-name">{{item.name}}</h1>
+            <div class="contacts-primary">
+                <h1 class="contacts-name">{{ item.name }}</h1>
+                <h2 class="contacts-username"><i>aka </i>{{ item.username }}</h2>
+                <b class="contacts-company">{{ item.company.name }}</b>
+            </div>
+            
+            <div class="contacts-secondary">
+                <a class="contacts-reach" :href="`tel:${item.phone}`">{{ item.phone }}</a>
+                <a class="contacts-reach" :href="`mailto:${item.email}`">{{ item.email }}</a>
+                <a class="contacts-reach" :href="item.website">{{ item.website }}</a>
+            </div>
+            <div class="contacts-misc">
+                <div class="contacts-misc-item">{{ item.address.suite }}</div>
+                <div class="contacts-misc-item">{{ item.address.street }}</div>
+                <div class="contacts-misc-item">{{ item.address.city }}</div>
+                <div class="contacts-misc-item">{{ item.address.zipcode }}</div>
+            </div>
         </article>
     </div>
 </template>
@@ -45,10 +61,11 @@ export default {
         init() {
             fetch(`${constants.API_URL}/users`)
             .then((response) => (response.json()))
-            .then((json) => this.contactsServer = json)
+            .then((json) => this.contactsServer = json.sort((a, b) => a.name.localeCompare(b.name)))
             .finally(this.isInit = true);
         },
         toggleAllContacts() {
+            this.textFilter = '';
             if (!this.isAllShown) {
                 this.contactsShown = this.contactsServer;
                 this.isAllShown = true;
@@ -109,20 +126,71 @@ export default {
         }
     }
 
-    .contacts-name {
-        margin: 0;
-        font-size: 16px;
-    }
-
     .search-input {
         padding: 8px 12px;
         border-radius: 5px;
         border: none;
-        min-width: 264px;
+        min-width: 290px;
+        box-sizing: border-box;
     }
 
     .contacts-cover {
         margin-top: 40px;
     }
 
+    .contacts-item {
+        border: 1px solid var(--color-yellow);
+        border-radius: 5px;
+        text-align: left;
+        padding: 12px 8px;
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+
+        & + & {
+            margin-top: 12px;
+        }
+    }
+
+    .contacts-name {
+        margin: 0;
+        font-size: 16px;
+    }
+
+    .contacts-username,
+    .contacts-company {
+        margin: 0;
+        font-size: 14px;
+        color: var(--color-text-light);
+    }
+
+    .contacts-secondary {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .contacts-reach {
+        color: var(--color-text);
+        text-decoration: none;
+        font-size: 12px;
+        
+        &:hover {
+            color: var(--color-yellow);
+        }
+    }
+
+    .contacts-misc-item {
+        font-size: 12px;
+    }
+
+    @media (max-width: 576px) {
+        .contacts-controls {
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .contacts-all {
+            min-width: 290px;
+        }
+    }
 </styles>

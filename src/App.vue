@@ -15,7 +15,7 @@ export default {
 }
 </script>
 
-<style>
+<style lang="less">
 @import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,700;1,400&display=swap');
 
 :root {
@@ -23,7 +23,9 @@ export default {
     --color-grey: #1c1a1a;
     --color-bg: #0e2c40;
     --color-text: #c1a187;
+    --color-text-light: #b2b1b0;
     --color-green: #148d8d;
+    --color-yellow: #c1a1a7;
     --color-dark-green: #1a4a5a;
     --main-transition: 0.2s;
 }
@@ -31,6 +33,19 @@ export default {
 html,
 body {
     height: 100%;
+
+    &::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+        background-color: transparent;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: var(--color-text);
+        border-radius: 6px;
+        -webkit-transition: background-color 2s;
+        transition: background-color 2s;
+    }
 }
 
 body {
