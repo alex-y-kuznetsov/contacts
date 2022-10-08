@@ -1,10 +1,17 @@
 <template>
-  <div>Contacts App</div>
+    <h1>Welcome!</h1>
+
+    <UserContacts />
 </template>
 
 <script>
+import UserContacts from '@/views/UserContacts.vue';
+
 export default {
-  name: 'HomePage'
+    name: 'HomePage',
+    components: {
+        UserContacts
+    }
 }
 </script>
 
