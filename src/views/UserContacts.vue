@@ -23,21 +23,32 @@
             :key="itemKey"
         >
             <div class="contacts-primary">
-                <h1 class="contacts-name">{{ item.name }}</h1>
-                <h2 class="contacts-username"><i>aka </i>{{ item.username }}</h2>
-                <b class="contacts-company">{{ item.company.name }}</b>
+                <div class="contacts-inner-cover">
+                    <h1 class="contacts-name">{{ item.name }}</h1>
+                    <h2 class="contacts-username"><i>aka </i>{{ item.username }}</h2>
+                    <b class="contacts-company">{{ item.company.name }}</b>
+                </div>
             </div>
             
             <div class="contacts-secondary">
-                <a class="contacts-reach" :href="`tel:${item.phone}`">{{ item.phone }}</a>
-                <a class="contacts-reach" :href="`mailto:${item.email}`">{{ item.email }}</a>
-                <a class="contacts-reach" :href="item.website">{{ item.website }}</a>
+                <a class="contacts-reach contacts-phone" 
+                    :href="`tel:${item.phone}`"
+                >{{ item.phone }}</a>
+                <a class="contacts-reach contacts-email" 
+                    :href="`mailto:${item.email}`"
+                >{{ item.email }}</a>
+                <a class="contacts-reach contacts-website"
+                    :href="`https://${item.website}`"
+                    target="_blank" 
+                >{{ item.website }}</a>
             </div>
             <div class="contacts-misc">
-                <div class="contacts-misc-item">{{ item.address.suite }}</div>
-                <div class="contacts-misc-item">{{ item.address.street }}</div>
-                <div class="contacts-misc-item">{{ item.address.city }}</div>
-                <div class="contacts-misc-item">{{ item.address.zipcode }}</div>
+                <div class="contacts-inner-cover">
+                    <div class="contacts-misc-item">{{ item.address.suite }}</div>
+                    <div class="contacts-misc-item">{{ item.address.street }}</div>
+                    <div class="contacts-misc-item">{{ item.address.city }}</div>
+                    <div class="contacts-misc-item">{{ item.address.zipcode }}</div>
+                </div>
             </div>
         </article>
         <div v-if="textFilter && !contactsShown.length">No contacts matching search query</div>
@@ -154,6 +165,27 @@ export default {
         }
     }
 
+    .contacts-primary,
+    .contacts-misc {
+        display: flex;
+        gap: 6px;
+        
+        &::before {
+            width: 24px;
+            height: 24px;
+            display: block;
+            content: '';
+            background-repeat: no-repeat;
+            background-size: contain;
+        }
+    }
+
+    .contacts-primary {
+        &::before {
+            background-image: url('@/assets/icons/user.png');
+        }
+    }
+
     .contacts-name {
         margin: 0;
         font-size: 16px;
@@ -176,9 +208,45 @@ export default {
         color: var(--color-text);
         text-decoration: none;
         font-size: 12px;
+        display: flex;
+        gap: 6px;
+        align-items: center;
+
+        &::before {
+            width: 16px;
+            height: 16px;
+            display: block;
+            content: '';
+            background-repeat: no-repeat;
+            background-size: contain;
+        }
         
         &:hover {
             color: var(--color-yellow);
+        }
+    }
+
+    .contacts-phone {
+        &::before {
+            background-image: url('@/assets/icons/phone.png');
+        }
+    }
+
+    .contacts-email {
+        &::before {
+            background-image: url('@/assets/icons/email.png');
+        }
+    }
+
+    .contacts-website {
+        &::before {
+            background-image: url('@/assets/icons/website.png');
+        }
+    }
+
+    .contacts-misc {
+        &::before {
+            background-image: url('@/assets/icons/location.png');
         }
     }
 
@@ -197,8 +265,12 @@ export default {
         }
 
         .contacts-item {
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: 2fr 1fr;
             grid-template-rows: 1fr 1fr;
+        }
+
+        .contacts-primary {
+            grid-column: span 2;
         }
 
         .contacts-secondary {
@@ -208,6 +280,13 @@ export default {
 
         .contacts-reach {
             font-size: 14px;
+        }
+
+        .contacts-primary,
+        .contacts-misc {
+            &::before {
+                display: none;
+            }
         }
     }
 </styles>
