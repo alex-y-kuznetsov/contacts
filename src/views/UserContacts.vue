@@ -1,6 +1,6 @@
 <template>
     <div>You have {{ contactsServer.length }} contacts</div>
-    <div class="contacts-controls">
+    <div class="contacts-controls" ref="contactsControls">
         <button 
             class="contacts-all"
             @click="toggleAllContacts"
@@ -15,12 +15,21 @@
                 @input="findContact"
             >
         </div>
+        <div class="alphanet-block">
+            <button class="alphabet-item" 
+                v-for="item, itemKey in computedAlphabet" 
+                :key="itemKey"
+                @click="goToLetter(item)"
+            >{{ item }}</button>
+        </div>
     </div>
     <div class="contacts-cover">
         <article 
             class="contacts-item"
             v-for="item, itemKey in contactsShown"
             :key="itemKey"
+            :ref="item.name[0].toLowerCase()"
+            :style="{ scrollMarginTop: controlsHeight + 'px' }"
         >
             <div class="contacts-primary">
                 <div class="contacts-inner-cover">
@@ -64,17 +73,39 @@ export default {
         return {
             isInit: false,
             isAllShown: false,
+            isAlphabet: false,
             contactsServer: [],
             contactsShown: [],
-            textFilter: ''
+            textFilter: '',
+            controlsHeight: null
         }
     },
     methods: {
         init() {
             fetch(`${constants.API_URL}/users`)
             .then((response) => (response.json()))
-            .then((json) => this.contactsServer = json.sort((a, b) => a.name.localeCompare(b.name)))
+            .then((json) => { 
+                this.contactsServer = json.sort((a, b) => a.name.localeCompare(b.name)) 
+            })
             .finally(this.isInit = true);
+        },
+        getAlphabet(array) {
+            this.isAlphabet = false;
+            let alphabet = [];
+            array.forEach(item => {
+                let letter = item.name[0].toLowerCase();
+                if(alphabet.indexOf(letter) === -1) {
+                    alphabet.push(letter);
+                }
+            })
+            this.isAlphabet = true;
+            return alphabet;
+        },
+        goToLetter(letter) {
+            const [el] = this.$refs[letter];
+            if (el) {
+                el.scrollIntoView({ behavior: "smooth" });
+            }
         },
         toggleAllContacts() {
             this.textFilter = '';
@@ -85,7 +116,6 @@ export default {
                 this.contactsShown = [];
                 this.isAllShown = false;
             }
-            
         },
         findContact() {
             if (!this.textFilter) {
@@ -99,10 +129,27 @@ export default {
                 item.phone.toLowerCase().startsWith(this.textFilter.toLowerCase()) ||
                 item.email.toLowerCase().startsWith(this.textFilter.toLowerCase())
             );  
+        },
+        getControlsHeight() {
+            this.controlsHeight = this.$refs.contactsControls.offsetHeight;
+        }
+    },
+    computed: {
+        computedAlphabet() {
+            return this.contactsShown.length ? this.getAlphabet(this.contactsShown) : []
+        }
+    },
+    watch: {
+        isAlphabet() {
+            this.getControlsHeight();
         }
     },
     mounted() {
+        window.addEventListener('resize', this.getControlsHeight)
         this.init();
+    },
+    beforeUnmount() {
+        window.removeEventListener('resize', this.getControlsHeight)
     }
 }
 
@@ -111,9 +158,10 @@ export default {
 <styles scoped lang="less">
     .contacts-controls {
         display: flex;
+        flex-wrap: wrap;
         justify-content: center;
         align-items: center;
-        gap: 30px;
+        gap: 20px;
         margin: 20px -1px 0 -1px;
         position: sticky;
         top: -1px;
@@ -148,6 +196,31 @@ export default {
         border: none;
         min-width: 290px;
         box-sizing: border-box;
+    }
+
+    .alphanet-block {
+        width: 100%;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px;
+        justify-content: center;
+    }
+
+    .alphabet-item {
+        border: 1px solid var(--color-green);
+        border-radius: 2px;
+        background-color: transparent;
+        color: var(--text-color);
+        cursor: pointer;
+        padding: 2px;
+        width:24px;
+        height: 24px;
+
+        &:hover {
+            background-color: var(--color-green);
+            color: var(--color-white);
+            transition: all var(--main-transition);
+        }
     }
 
     .contacts-cover {
