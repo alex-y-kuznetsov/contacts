@@ -5,12 +5,12 @@
             class="contacts-all"
             @click="toggleAllContacts"
         >{{ isAllShown ? 'hide' : 'show' }} all</button>
-        <div>or find some</div>
+        <div class="search-divider">or</div>
         <div class="search-block">
             <input 
                 type="text" 
                 class="search-input" 
-                placeholder="by name, username, phone number or email"
+                placeholder="search by name, username, phone or email"
                 v-model="textFilter"
                 @input="findContact"
             >
@@ -114,7 +114,11 @@ export default {
         justify-content: center;
         align-items: center;
         gap: 30px;
-        margin-top: 40px;
+        margin: 20px -1px 0 -1px;
+        position: sticky;
+        top: -1px;
+        padding: 20px;
+        background-color: var(--color-bg);
     }
 
     .contacts-all {
@@ -147,7 +151,7 @@ export default {
     }
 
     .contacts-cover {
-        margin-top: 40px;
+        margin-top: 20px;
     }
 
     .contacts-item {
@@ -262,6 +266,10 @@ export default {
 
         .contacts-all {
             min-width: 290px;
+        }
+
+        .search-divider {
+            display: none;
         }
 
         .contacts-item {
